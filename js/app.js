@@ -1,17 +1,23 @@
+// <----------------------------------------- Game Object -------------------------------------------->
 const game = {
     board: [],
     initialOptions: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    selectedTile: null,
+    selectedTileId: null,
+    boxNumber: 0,
+
     populate() {
       this.board = new Array(9).fill(0).map(el => {
         return (el = new Array(9).fill(0));
       });
     },
+
     render() {
       let tileId = 0;
       for (let i = 0; i < game.board.length; i++) {
         for (let j = 0; j < game.board[i].length; j++) {
           if ((i + 1) % 3 === 0 && (j + 1) % 3 === 0) {
-            $("div.container").append(
+            $($("div.row")[i]).append(
               $(
                 `<div class="tile bottom right" id="${tileId}">${
                   game.board[i][j]
@@ -21,7 +27,7 @@ const game = {
             tileId++;
           } else if ((i + 1) % 3 === 0) {
             // console.log("i is 2")
-            $("div.container").append(
+            $($("div.row")[i]).append(
               $(
                 `<div class="tile bottom" id="${tileId}">${
                   game.board[i][j]
@@ -30,22 +36,27 @@ const game = {
             );
             tileId++;
           } else if ((j + 1) % 3 === 0) {
-            $("div.container").append(
+            $($("div.row")[i]).append(
               $(
                 `<div class="tile right" id="${tileId}">${game.board[i][j]}</div>`
               )
             );
             tileId++;
           } else {
-            $("div.container").append(
+            $($("div.row")[i]).append(
               $(`<div class="tile" id="${tileId}">${game.board[i][j]}</div>`)
             );
             tileId++;
           }
-          console.log(tileId);
+        //   console.log(tileId);
         }
       }
     },
+
+    getRow(num) {
+        return $(num).parent().attr('row')
+    },
+
     getCol(num) {
       const col = [];
       for (let i = 0; i < this.board.length; i++) {
@@ -112,11 +123,40 @@ const game = {
       }
     },
 
-    hideNumbers(){
-        
+    hideNumbers(diff){
+        const everyTile = [];
+        const singleRow = $('div.row')
+        console.log(singleRow)
+        // console.log(singleTile)
+        for(let i = 0; i < singleRow.length; i++){
+            console.log($(singleRow[i]))
+            for(let j = 0; j < $(singleRow[i])[0].childNodes.length; j++){
+                 // everyTile.push(singleTile);
+                if (Math.random() < diff){
+                    $(singleRow[i].childNodes[j]).text('')
+                    $(singleRow[i].childNodes[j]).css("background-color", "#d6d6d2")
+                    $(singleRow[i].childNodes[j]).on("click", (e)=>{
+                        this.selectedTileId = id
+                        this.getRow($(`#${game.selectedTileId}`))
+                        if (this.selectedTile){
+                            this.selectedTile.css("background-color", "#d6d6d2")
+                            this.selectedTile = $(e.target)
+                            this.selectedTile.css("background-color", "#a6ff73")
+                        } else if(!this.selectedTile){
+                            let id = e.target.id
+                            this.selectedTile = $(e.target)
+                            this.selectedTile.css("background-color", "#a6ff73")
+                        }
+                    })
+                }
+            }
+           
+        }
+        // console.log(everyTile);
     },
   
     checkRow(row, num) {
+      console.log('hitting CHECKROW')
       if (this.board[row].includes(num)) {
         return false;
       } else {
@@ -140,9 +180,107 @@ const game = {
       } else {
         return true;
       }
+    },
+
+    checkConflict(){
+        // if number is entered into selected tile run checkRow, checkCol, and checkBox
+        // if any of the three functions return false, turn inner text to color red
+        if(isNaN(this.boxNumber)) {
+            $(`#${this.selectedTileId}`).css("background-color", "#a6ff73")
+        } else {
+            this.getRow(this.selectedTile)
+            if(
+                this.checkRow(this.getRow($(`#${this.selectedTileId}`)), this.boxNumber))
+                // && 
+                // this.checkCol(this.getCol(this.selectedTile), this.boxNumber) 
+                // && 
+                // this.checkBox(this.getBox(this.selectedTile), this.boxNumber)) 
+                {
+                    console.log('hitting text change')
+                    $(`#${this.selectedTileId}`).css("background-color", "red")
+    
+            } else {
+                console.log('not hitting')
+            }
+        }
     }
+
   };
-  
-  game.populate();
-  game.fillBoard();
-  game.render();
+
+
+// <--------------------------------------- Button functionality --------------------------------------->
+
+
+
+  $('.numbers').on('click', (e)=>{
+      $(e.target).text()
+      if(game.selectedTile){
+          game.selectedTile.text($(e.target).text())
+          game.boxNumber = $(`#${game.selectedTileId}`).text()
+          game.checkConflict()
+      }
+  })
+
+  $('#remove-num').on('click', (e)=>{
+      const tileEntered = "";
+      if(game.selectedTile){
+          game.selectedTile.text(tileEntered)
+      }
+
+  })
+
+  $('.easy').on('click', (e)=>{
+      let diff = 0.50
+      $('.button-container').show()
+      $('.difficulty').hide()
+      game.populate();
+      game.fillBoard();
+      game.render();
+      game.hideNumbers(diff)
+  })
+
+  $('.medium').on('click', (e)=>{
+      let diff = 0.59
+      $('.button-container').show()
+      $('.difficulty').hide()
+      game.populate();
+      game.fillBoard();
+      game.render();
+      game.hideNumbers(diff)
+  })
+
+  $('.hard').on('click', (e)=>{
+      let diff = 0.691
+      $('.button-container').show()
+      $('.difficulty').hide()
+      game.populate();
+      game.fillBoard();
+      game.render();
+      game.hideNumbers(diff)
+  })
+
+
+// <----------------------------- Calling Game Functions in Start Button ------------------------------->
+
+$('.begin').hide()
+$('.difficulty').hide()
+$('.button-container').hide()
+$('.instructions').hide()
+
+
+$('.start').on('click', (e)=>{
+    $('.begin').show()
+    $('.instructions').show()
+    $('.start').hide()
+})
+
+$('.begin').on('click', (e)=>{
+    $('.difficulty').show()
+    $('.begin').hide()
+    $('.instructions').hide()
+})
+
+//   game.populate();
+//   game.fillBoard();
+//   game.render();
+//   game.checkConflict();
