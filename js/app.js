@@ -26,7 +26,6 @@ const game = {
             );
             tileId++;
           } else if ((i + 1) % 3 === 0) {
-            // console.log("i is 2")
             $($("div.row")[i]).append(
               $(
                 `<div class="tile bottom" id="${tileId}">${
@@ -48,7 +47,6 @@ const game = {
             );
             tileId++;
           }
-        //   console.log(tileId);
         }
       }
     },
@@ -124,12 +122,9 @@ const game = {
     },
 
     hideNumbers(diff){
-        const everyTile = [];
         const singleRow = $('div.row')
-        // console.log(singleTile)
         for(let i = 0; i < singleRow.length; i++){
             for(let j = 0; j < $(singleRow[i])[0].childNodes.length; j++){
-                 // everyTile.push(singleTile);
                 if (Math.random() < diff){
                     $(singleRow[i].childNodes[j]).text('')
                     $(singleRow[i].childNodes[j]).css("background-color", "#d6d6d2")
@@ -152,11 +147,9 @@ const game = {
             }
            
         }
-        // console.log(everyTile);
     },
   
     checkRow(row, num) {
-      console.log('hitting CHECKROW')
       if (this.board[row].includes(num)) {
         return false;
       } else {
@@ -204,20 +197,6 @@ const game = {
             } else {
                 $(`#${this.selectedTileId}`).css("background-color", "red")
             }
-
-            // if(
-            //     this.checkRow(this.getRow($(`#${this.selectedTileId}`)), +this.boxNumber))
-            //     // && 
-            //     // this.checkCol(this.getCol(this.selectedTile), this.boxNumber) 
-            //     // && 
-            //     // this.checkBox(this.getBox(this.selectedTile), this.boxNumber)) 
-            //     {
-            //         console.log('hitting text change')
-                    
-            //     } else {
-            //         console.log('not hitting')
-            //         $(`#${this.selectedTileId}`).css("background-color", "red")
-            // }
         }
         this.checkForWin()
 
@@ -328,9 +307,4 @@ $('.begin').on('click', (e)=>{
 
 $('.restart').on('click', (e)=>{
     location.reload()
-})
-
-//   game.populate();
-//   game.fillBoard();
-//   game.render();
-//   game.checkConflict();
+gt })
