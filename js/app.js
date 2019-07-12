@@ -126,26 +126,26 @@ const game = {
     hideNumbers(diff){
         const everyTile = [];
         const singleRow = $('div.row')
-        console.log(singleRow)
         // console.log(singleTile)
         for(let i = 0; i < singleRow.length; i++){
-            console.log($(singleRow[i]))
             for(let j = 0; j < $(singleRow[i])[0].childNodes.length; j++){
                  // everyTile.push(singleTile);
                 if (Math.random() < diff){
                     $(singleRow[i].childNodes[j]).text('')
                     $(singleRow[i].childNodes[j]).css("background-color", "#d6d6d2")
                     $(singleRow[i].childNodes[j]).on("click", (e)=>{
+                        let id = e.target.id
                         this.selectedTileId = id
                         this.getRow($(`#${game.selectedTileId}`))
                         if (this.selectedTile){
                             this.selectedTile.css("background-color", "#d6d6d2")
                             this.selectedTile = $(e.target)
                             this.selectedTile.css("background-color", "#a6ff73")
+                            this.getRow($(`#${game.selectedTileId}`))
                         } else if(!this.selectedTile){
-                            let id = e.target.id
                             this.selectedTile = $(e.target)
                             this.selectedTile.css("background-color", "#a6ff73")
+                            this.getRow($(`#${game.selectedTileId}`))
                         }
                     })
                 }
@@ -188,21 +188,63 @@ const game = {
         if(isNaN(this.boxNumber)) {
             $(`#${this.selectedTileId}`).css("background-color", "#a6ff73")
         } else {
-            this.getRow(this.selectedTile)
-            if(
-                this.checkRow(this.getRow($(`#${this.selectedTileId}`)), this.boxNumber))
-                // && 
-                // this.checkCol(this.getCol(this.selectedTile), this.boxNumber) 
-                // && 
-                // this.checkBox(this.getBox(this.selectedTile), this.boxNumber)) 
-                {
-                    console.log('hitting text change')
-                    $(`#${this.selectedTileId}`).css("background-color", "red")
-    
+
+            //get the id of the box that was clicked
+            // this.selectedTileId
+            //get the row with $(`#${this.selectedTileId}`).parent()
+            // which row is a number
+            const whichRow = $($(`#${this.selectedTileId}`).parent()[0]).attr('row')
+            //get the id of the box at position [0] in that row
+            const firstBoxInRowId = $($($(`#${this.selectedTileId}`).parent()).children()[0]).attr('id')
+            //subtract the id of the box that was clicked from the id of the box at [0] and that gives you the column
+            const column = this.selectedTileId - firstBoxInRowId
+            //using row and column, see if the number that was input matches the number in that position in the game board
+            const numberToCheckAgainst = this.board[whichRow][column]
+            if(parseInt(this.boxNumber) === numberToCheckAgainst) {
             } else {
-                console.log('not hitting')
+                $(`#${this.selectedTileId}`).css("background-color", "red")
             }
+
+            // if(
+            //     this.checkRow(this.getRow($(`#${this.selectedTileId}`)), +this.boxNumber))
+            //     // && 
+            //     // this.checkCol(this.getCol(this.selectedTile), this.boxNumber) 
+            //     // && 
+            //     // this.checkBox(this.getBox(this.selectedTile), this.boxNumber)) 
+            //     {
+            //         console.log('hitting text change')
+                    
+            //     } else {
+            //         console.log('not hitting')
+            //         $(`#${this.selectedTileId}`).css("background-color", "red")
+            // }
         }
+        this.checkForWin()
+
+
+    },
+
+    checkForWin(){
+        const board = $('.row').children()
+        console.log(board)
+
+        // for(let i = 0; i < board.length; i++){
+        //     const array = [];
+        //     array.push(board[i].text)
+        // }
+        // if(array.length == 81){
+        //     console.log('you win')
+        // } else{
+        //     console.log('keep playing')
+        // }
+        $.each(board, function(box) {
+            const entry = $(box).text()
+            if(entry !== ""){
+                console.log('you won')
+            } else {
+                console.log('you lost')
+            }
+        })
     }
 
   };
@@ -230,8 +272,9 @@ const game = {
   })
 
   $('.easy').on('click', (e)=>{
-      let diff = 0.50
+      let diff = 0.10
       $('.button-container').show()
+      $('.restart').show()
       $('.difficulty').hide()
       game.populate();
       game.fillBoard();
@@ -242,6 +285,7 @@ const game = {
   $('.medium').on('click', (e)=>{
       let diff = 0.59
       $('.button-container').show()
+      $('.restart').show()
       $('.difficulty').hide()
       game.populate();
       game.fillBoard();
@@ -252,6 +296,7 @@ const game = {
   $('.hard').on('click', (e)=>{
       let diff = 0.691
       $('.button-container').show()
+      $('.restart').show()
       $('.difficulty').hide()
       game.populate();
       game.fillBoard();
@@ -266,6 +311,7 @@ $('.begin').hide()
 $('.difficulty').hide()
 $('.button-container').hide()
 $('.instructions').hide()
+$('.restart').hide()
 
 
 $('.start').on('click', (e)=>{
@@ -278,6 +324,10 @@ $('.begin').on('click', (e)=>{
     $('.difficulty').show()
     $('.begin').hide()
     $('.instructions').hide()
+})
+
+$('.restart').on('click', (e)=>{
+    location.reload()
 })
 
 //   game.populate();

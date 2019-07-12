@@ -10,11 +10,6 @@ body{
     -webkit-text-fill-color: white;
     -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: black;
-    text-shadow:
-        -1px -1px 0 #000,  
-        1px -1px 0 #000,
-        -1px 1px 0 #000,
-        1px 1px 0 #000;
 }
 
 .instructions{
@@ -22,15 +17,21 @@ body{
     padding-right: 70px;
 }
 
+.restart {
+    position: absolute;
+    top: 100px;
+    right: 50px;
+}
+
 h1 {
     font-size: 100px;
     margin: 0;
 }
 
-footer {
-    width: 100%;
-    bottom: 0;
-    position: relative;
+audio {
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 button {
